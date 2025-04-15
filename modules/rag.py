@@ -1,11 +1,14 @@
+import json
+
 import os
 script_dir = os.path.dirname(__file__)
 
-import json
 from langchain_text_splitters import CharacterTextSplitter
+from chromadb.config import DEFAULT_TENANT, DEFAULT_DATABASE, Settings
 import chromadb
 
 default_filepath = os.path.join(script_dir, "data/annotations.json")
+index_directory = os.path.join(script_dir, "data/chroma_storage")
 
 def index_data(json_filepath=default_filepath):
     """
@@ -20,9 +23,8 @@ def index_data(json_filepath=default_filepath):
     """
     with open(json_filepath, 'r') as f:
         data = json.load(f)
-    
-    # Instantiate a text splitter (if you want to split long annotations into chunks).
-    # Currently, the text splitter is not applied; uncomment the split line if needed.
+
+    # Instantiate a text splitter if needed for further splitting (currently not applied)
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=2500,
@@ -30,12 +32,12 @@ def index_data(json_filepath=default_filepath):
         length_function=len,
         is_separator_regex=False,
     )
-    
+
     annotations = []
     types = []
     for record in data:
         annotation_text = str(record.get("general_figure_info", ""))
-        # To split the text into chunks, uncomment the next two lines.
+        # You could process splitting here if needed:
         # chunks = text_splitter.split_text(annotation_text)
         # annotations.extend(chunks)
         annotations.append(annotation_text)
@@ -43,28 +45,46 @@ def index_data(json_filepath=default_filepath):
     
     return annotations, types
 
-def chunk_data(annotations, collection_name="c2c", max_documents=1000):
+def get_or_create_collection(annotations, collection_name="c2c", max_documents=1000, persist_directory=index_directory):
     """
-    Create a ChromaDB collection and index a subset of annotation documents.
+    Retrieve a persistent ChromaDB collection using PersistentClient. If the collection
+    does not already exist in the specified path, create it by indexing the supplied annotations,
+    persist the new collection, and return it.
 
-    Args:
+    Parameters:
         annotations (list): List of annotation texts.
-        collection_name (str, optional): Name for the ChromaDB collection. Defaults to "c2c".
-        max_documents (int, optional): Maximum number of documents to index. Defaults to 1000.
+        collection_name (str): Name of the collection. Defaults to "c2c".
+        max_documents (int): Maximum number of documents to index. Defaults to 1000.
+        persist_directory (str): Local path where the collection will be stored.
+                                 If the path does not exist, it will be created.
 
     Returns:
-        Collection: The created ChromaDB collection with the added documents.
+        Collection: A ChromaDB collection object.
     """
-    chroma_client = chromadb.Client()
-    collection = chroma_client.create_collection(name=collection_name)
-    
-    # Limit the documents to index if necessary
-    selected_docs = annotations[:max_documents]
-    collection.add(
-        documents=selected_docs,
-        ids=[str(i) for i in range(len(selected_docs))]
+    # Initialize the persistent client with the specified local storage directory.
+    client = chromadb.PersistentClient(
+        path=persist_directory,
+        settings=Settings(),
+        tenant=DEFAULT_TENANT,
+        database=DEFAULT_DATABASE,
     )
-    
+
+    # Check if the collection already exists.
+    collection = client.get_collection(name=collection_name)
+
+    # If collection doesn't exist, create and index the new collection.
+    if collection is None:
+        print(f"Collection '{collection_name}' not found. Creating a new collection.")
+        collection = client.create_collection(name=collection_name)
+        selected_docs = annotations[:max_documents]
+        collection.add(
+            documents=selected_docs,
+            ids=[str(i) for i in range(len(selected_docs))]
+        )
+        print("New collection created and persisted.")
+    else:
+        print(f"Collection '{collection_name}' found.")
+
     return collection
 
 def query_data(question, collection, n_results=3):
@@ -86,9 +106,9 @@ def query_data(question, collection, n_results=3):
     return examples
 
 if __name__ == "__main__":
-    # Example usage of the RAG module
+    # For testing: index data and get the persistent collection.
     annotations, types = index_data()
-    collection = chunk_data(annotations)
+    collection = get_or_create_collection(annotations)
     sample_question = "What information does this annotation provide?"
     results = query_data(sample_question, collection)
     print("Query Results:", results)

@@ -1,5 +1,5 @@
 from modules.input_profiler import main as run_input_profiler
-from modules.rag import index_data, chunk_data
+from modules.rag import index_data, get_or_create_collection
 from modules.code_generation import main as run_code_generator
 from modules.visualization import render_visualization
 
@@ -14,7 +14,7 @@ def run_pipeline():
 
     2. RAG (Retrieval-Augmented Generation):
        - Loads annotation data from a JSON file.
-       - Indexes a subset of these annotations into a ChromaDB collection.
+       - Retrieves a persistent collection (indexed once on the first run).
 
     3. Code Generation:
        - Retrieves relevant examples by querying the collection.
@@ -36,10 +36,10 @@ def run_pipeline():
     print("Data Question:", question)
     print("Visualization Type:", viz_type)
     
-    # Step 2: RAG – Indexing Annotations
+    # Step 2: RAG – Load or Create Persistent Collection
     annotations, _ = index_data()
-    collection = chunk_data(annotations)
-    print("=== RAG Module: Data Indexed ===")
+    collection = get_or_create_collection(annotations)
+    print("=== RAG Module: Data Indexed or Loaded from Cache ===")
     
     # Step 3: Code Generation
     generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection)
