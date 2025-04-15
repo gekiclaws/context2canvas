@@ -1,0 +1,9 @@
+# requirements.txt
+pandas
+numpy
+matplotlib
+scikit-learn
+sentence-transformers
+openai
+flask
+python-dotenv
