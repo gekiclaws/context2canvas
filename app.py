@@ -6,10 +6,9 @@ from modules.input_profiler import main as run_input_profiler
 from modules.rag import index_data, get_or_create_collection, query_data
 from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
-from evaluation.eval_input_profiler import main as run_metrics
 
 # Import the generic metrics functions
-from evaluation.metrics import set_metric, get_metric, load_metrics, increment_metric_by_1, compute_execution_pass_rate
+from evaluation.metrics import load_metrics, compute_execution_pass_rate, compute_question_diversity_score
 
 def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     """
@@ -55,12 +54,9 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     # Step 5: Update and Report Metrics
     print("=== Updating and Generating Metrics ===")
     compute_execution_pass_rate(success)
+    compute_question_diversity_score()
     updated_metrics = load_metrics()
     print("Updated metrics:", updated_metrics)
-    
-    # Optionally run additional metrics calculations.
-   #  extra_metrics = run_metrics()
-   #  print("Additional metrics:", extra_metrics)
     
 if __name__ == "__main__":
     run_pipeline()
