@@ -7,13 +7,14 @@ config = configparser.ConfigParser()
 config_file = os.path.join(os.path.dirname(__file__), "../../config.ini")
 config.read(config_file)
 api_key = config['openai']['api_key']
+model = config['openai']['model']
 
 # Create a new OpenAI client
 client = OpenAI(api_key=api_key)
 
 def prompt_model(prompt, temp=1.0):
     completion = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=model,
         store=True,
         temperature=temp,
         messages=[
