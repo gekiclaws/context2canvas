@@ -1,3 +1,6 @@
+import os
+script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
+
 import pandas as pd
 from llm.openai_client import prompt_model
 
@@ -44,7 +47,9 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     return question, viz_type, columns, summary_stats
 
 if __name__ == "__main__":
-    # Example execution
-    question, viz_type, columns, summary_stats = main("data/pixar_films.csv")
+    data_path = os.path.join(script_dir, "data/pixar_films.csv")
+    question, viz_type, columns, summary_stats = main(data_path)
     print("Data Question:", question)
     print("Visualization Type:", viz_type)
+    print("Columns:", columns)
+    print("Summary Stats:", summary_stats)

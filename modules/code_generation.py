@@ -1,7 +1,8 @@
 from llm.openai_client import prompt_model
 from rag import query_data, chunk_data, index_data
+import re
 
-def main(viz_type, question, columns, summary_stats, collection):
+def generate_code(viz_type, question, columns, summary_stats, collection):
     """
     Generate Python code for a visualization based on provided profiling parameters and examples 
     retrieved from a ChromaDB collection.
@@ -22,7 +23,7 @@ def main(viz_type, question, columns, summary_stats, collection):
     # Retrieve examples from the collection based on the question
     examples = query_data(question, collection)
     # Generate Python code using the prompt_model (LLM)
-    code_output = prompt_model(
+    response = prompt_model(
         f"Generate python code for this visualization, given the following parameters:\n"
         f"- Visualization Type: {viz_type}\n"
         f"- Data Question: {question}\n"
@@ -30,7 +31,22 @@ def main(viz_type, question, columns, summary_stats, collection):
         f"- Summary Statistics: {summary_stats}\n"
         f"Model your output on the following examples:\n{examples}"
     )
-    return code_output
+    extracted_code = extract_code(response)
+    return extracted_code
+
+def extract_code(output):
+    """
+    Extracts Python code from a markdown-style code block in the given output string.
+    Handles cases where the code is wrapped in ```python ... ``` or just ``` ... ```.
+    Returns the extracted code as a string, or None if no code block is found.
+    """
+    # Try to match ```python ... ```
+    match = re.search(r"```(?:python)?\n(.*?)```", output, re.DOTALL)
+    if match:
+        return match.group(1).strip()
+    else:
+        print("⚠️ No valid code block found in output.")
+        return None
 
 if __name__ == "__main__":
     # Example usage:
@@ -44,6 +60,6 @@ if __name__ == "__main__":
     annotations, _ = index_data()
     collection = chunk_data(annotations)
     
-    generated_code = main(viz_type, question, columns, summary_stats, collection)
+    generated_code = generate_code(viz_type, question, columns, summary_stats, collection)
     print("Generated Code:")
     print(generated_code)

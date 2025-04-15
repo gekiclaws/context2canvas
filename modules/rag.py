@@ -1,8 +1,13 @@
+import os
+script_dir = os.path.dirname(__file__)
+
 import json
 from langchain_text_splitters import CharacterTextSplitter
 import chromadb
 
-def index_data(json_filepath='data/annotations.json'):
+default_filepath = os.path.join(script_dir, "data/annotations.json")
+
+def index_data(json_filepath=default_filepath):
     """
     Load annotation data from a JSON file and extract annotations and types.
 
