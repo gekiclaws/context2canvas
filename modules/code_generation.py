@@ -54,12 +54,15 @@ def extract_code(output):
         return None
 
 def remove_sample_data_section(code):
-    # Regex pattern to match from the "data =" line up to and including "df = pd.DataFrame(data)"
-    pattern = r"data\s*=\s*\{.*?df\s*=\s*pd\.DataFrame\(data\)\s*"
-    # Replace the matched block with an empty string (or your custom code)
-    cleaned_code = re.sub(pattern, "", code, flags=re.DOTALL)
-    return cleaned_code
+    # Remove dictionary-based sample data block
+    pattern_dict_block = r"data\s*=\s*\{.*?df\s*=\s*pd\.DataFrame\(data\)\s*"
+    code = re.sub(pattern_dict_block, "", code, flags=re.DOTALL)
 
+    # Remove any line that assigns to df (covers all df = ... cases)
+    pattern_df_assignment = r"^.*\bdf\s*=\s*.*$"
+    code = re.sub(pattern_df_assignment, "", code, flags=re.MULTILINE)
+
+    return code
 
 if __name__ == "__main__":
     # Example usage:
