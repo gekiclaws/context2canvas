@@ -101,3 +101,6 @@ def compute_execution_pass_rate(success, filepath=METRICS_FILE):
 
 def compute_question_diversity_score(filepath=METRICS_FILE):
   return set_metric("question_diversity_score", question_diversity(), filepath)
+
+def compute_retrieval_alignment_score(filepath=METRICS_FILE):
+  return 0  
