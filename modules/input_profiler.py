@@ -31,29 +31,32 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     # Generate summary statistics and convert to a dict for better readability in prompts
     summary_stats = df.describe().to_dict()
     
-    
     question_examples = [
-            "Which department has the highest employee turnover rate?",
-            "What portion of total sales came from each product category?",
-            "Is there a relationship between hours studied and exam scores?",
-            "Which product category has the most sales?",
-            "How many students are in each major?",
-            "What are the top 10 most common job titles?",
-            "How often does each error code occur in the system logs?",
-            "What’s the average salary per department?",
-            "Which city has the highest average rental price?",
-            "How much revenue does each region generate?",
-            "What’s the average rating for products by brand?",
-            "What percentage of total sales comes from each product category?",
-            "How is the population distributed by age group?",
-            "What’s the market share of different companies in the industry?",
-            "What are the proportions of different payment methods used by customers?",
-            "What’s the share of devices used to access the platform (mobile vs. desktop)?",
-            "How is revenue split among business units or departments?",
-            "How do sales trends compare between Product A and Product B?",
-            "How do different countries’ inflation rates change over the years?",
-            "What are the trends in programming language popularity by year?"
-        ]   
+        "What’s the average rating for products by brand?",
+        "How often does each error code occur in the system logs?",
+        "What are the proportions of different payment methods used by customers?",
+        "What are the top 10 most common job titles?",
+        "What percentage of total sales comes from each product category?",
+        "How do different countries’ inflation rates change over the years?",
+        "How does life expectancy vary across a set of countries?",
+        "What’s the share of devices used to access the platform (mobile vs. desktop)?",
+        "Which city has the highest average rental price?",
+        "How does website traffic vary week by week?",
+        "What’s the number of bugs reported per software module?",
+        "How is the population distributed by age group?",
+        "Which department has the highest employee turnover rate?",
+        "How much revenue does each region generate?",
+        "What’s the average salary per department?",
+        "What’s the market share of different companies in the industry?",
+        "How is revenue split among business units or departments?",
+        "What portion of total sales came from each product category?",
+        "Is there a relationship between hours studied and exam scores?",
+        "How many students are in each major?",
+        "How do sales trends compare between Product A and Product B?",
+        "What are the trends in programming language popularity by year?",
+        "Which product category has the most sales?"
+    ]
+    
     # Create an interesting data question based on the dataset characteristics
     question = prompt_model(
         f"Only consider the graph types mentioned here: {supported_classes}. Create a single, interesting data question based on {columns} and {summary_stats}. Do not return anything besides the data question. Your answer should be a simple sentence. Format your response like {question_examples}", 2.0
