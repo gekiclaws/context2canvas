@@ -2,3 +2,4 @@
 config.ini
 *.pyc
 */*/chroma_storage
+.DS_Store

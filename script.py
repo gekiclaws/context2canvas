@@ -1,6 +1,6 @@
 from modules.input_profiler import main as run_input_profiler
 from modules.rag import index_data, get_or_create_collection
-from modules.code_generation import main as run_code_generator
+from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
 
 def run_pipeline():
@@ -29,7 +29,7 @@ def run_pipeline():
     """
     
     # Step 1: Input Profiling
-    csv_filepath = "data/pixar_films.csv"
+    csv_filepath = "modules/data/pixar_films.csv"
     supported_vis_types = ["bar", "line", "scatter", "histogram"]
     question, viz_type, columns, summary_stats = run_input_profiler(csv_filepath, supported_vis_types)
     print("=== Input Profiling Completed ===")
