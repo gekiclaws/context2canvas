@@ -1,8 +1,9 @@
+import pandas as pd
 import os
 script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
 
-import pandas as pd
-from llm.openai_client import prompt_model
+import bootstrap
+from modules.llm.openai_client import prompt_model
 
 def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"]):
     """

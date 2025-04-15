@@ -1,6 +1,8 @@
-from llm.openai_client import prompt_model
-from rag import query_data, chunk_data, index_data
 import re
+
+import bootstrap
+from modules.llm.openai_client import prompt_model
+from modules.rag import query_data, get_or_create_collection, index_data
 
 def generate_code(viz_type, question, columns, summary_stats, collection):
     """
@@ -58,7 +60,7 @@ if __name__ == "__main__":
 
     # Build the collection using the RAG module
     annotations, _ = index_data()
-    collection = chunk_data(annotations)
+    collection = get_or_create_collection(annotations)
     
     generated_code = generate_code(viz_type, question, columns, summary_stats, collection)
     print("Generated Code:")
