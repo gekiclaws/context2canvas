@@ -61,7 +61,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     question = prompt_model(
         f"Only consider the graph types mentioned here: {supported_classes}. Create a single, interesting data question based on {columns} and {summary_stats}. Do not return anything besides the data question. Your answer should be a simple sentence. Format your response like {question_examples}", 2.0
     )
-    logging.basicConfig(filename='module_results.log', level=logging.INFO)
+    logging.basicConfig(filename='evaluation/question_results.log', level=logging.INFO)
     logging.info(f"Result: {question}")
 
     # Determine the best visualization type given the question and dataset metadata

@@ -7,7 +7,7 @@ def compute_similarity(model, messages):
     similarity_matrix = cosine_similarity(embeddings)
     return similarity_matrix
 
-def question_diversity(scorer, log_file='module_results.log'):
+def question_diversity(scorer, log_file='evaluation/question_results.log'):
     try:
         with open(log_file, 'r') as f:
             logs = f.readlines()
