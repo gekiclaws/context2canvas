@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def render_visualization(generated_code, return_raw=False, df=None):
+def render_visualization(generated_code, df=None, return_raw=False):
     """
     Executes the validated Python code for visualization, renders the resulting chart,
     and optionally returns the raw Python code.
@@ -42,6 +42,7 @@ def render_visualization(generated_code, return_raw=False, df=None):
 
     if return_raw:
         return chart, generated_code
+    
     return chart
 
 if __name__ == "__main__":

@@ -47,14 +47,13 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     print("Examples Retrieved:", examples)
     
     # Step 3: Code Generation
-    generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection, df, examples)
+    generated_code = run_code_generator(viz_type, question, columns, summary_stats, df, examples)
     print("=== Generated Code ===")
     print(generated_code)
     
     # Step 4: Visualization Execution
     print("=== Executing Generated Visualization Code ===")
-    # Change return_raw to True if you want to see the raw Python code as well.
-    chart, raw_code = render_visualization(generated_code, return_raw=True, df=df)
+    chart = render_visualization(generated_code, df=df)
     if chart:
         print("Chart rendered successfully!")
     else:
