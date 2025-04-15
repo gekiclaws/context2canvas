@@ -5,4 +5,11 @@ IMPORTANT (setup):
 4. Switch client in config.ini to `gpt-4o` for better results.
 
 To run the app:
-1. `cd` into the root directory of the repo, then run the script with `python3 app.py`
+1. `cd` into the root directory of the repo
+2. Run the script with `python app.py`
+
+To test modules on their own:
+1. `cd` into the root directory
+2. Run `python -m modules.<name_of_module>` (example: `python -m modules.rag`)
+
+If a script takes too long to run, CTRL-C out and re-run the script.

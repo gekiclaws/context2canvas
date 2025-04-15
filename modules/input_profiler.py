@@ -2,7 +2,6 @@ import pandas as pd
 import os
 script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
 
-import bootstrap
 from modules.llm.openai_client import prompt_model
 
 def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"]):
@@ -74,7 +73,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
 
 if __name__ == "__main__":
     data_path = os.path.join(script_dir, "data/pixar_films.csv")
-    question, viz_type, columns, summary_stats = main(data_path)
+    question, viz_type, columns, summary_stats, df = main(data_path)
     print("Data Question:", question)
     print("Visualization Type:", viz_type)
     print("Columns:", columns)

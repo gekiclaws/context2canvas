@@ -1,6 +1,5 @@
 import re
 
-import bootstrap
 from modules.llm.openai_client import prompt_model
 from modules.rag import query_data, get_or_create_collection, index_data
 
