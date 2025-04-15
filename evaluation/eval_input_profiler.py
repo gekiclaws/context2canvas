@@ -20,5 +20,4 @@ def question_diversity(scorer, log_file='evaluation/question_results.log'):
 def main():
     scorer = BERTScorer(model_type='bert-base-uncased')
     model = SentenceTransformer('all-MiniLM-L6-v2')
-
     print(question_diversity(model))

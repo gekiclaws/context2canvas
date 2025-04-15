@@ -1,35 +1,25 @@
+import os
+import pandas as pd
+
+# Import functions from your project modules.
 from modules.input_profiler import main as run_input_profiler
 from modules.rag import index_data, get_or_create_collection, query_data
 from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
 from evaluation.eval_input_profiler import main as run_metrics
 
+# Import the generic metrics functions
+from evaluation.metrics import set_metric, get_metric, load_metrics, increment_metric_by_1, compute_execution_pass_rate
+
 def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     """
     Executes the full data-to-visualization pipeline:
-
-    1. Input Profiling:
-       - Reads a CSV dataset.
-       - Extracts column type information and summary statistics.
-       - Uses an LLM to generate a data question and determine a visualization type.
-
-    2. RAG (Retrieval-Augmented Generation):
-       - Loads annotation data from a JSON file.
-       - Retrieves a persistent collection (indexed once on the first run).
-
-    3. Code Generation:
-       - Retrieves relevant examples by querying the collection.
-       - Uses an LLM to generate Python visualization code based on the visualization type,
-         data question, dataset columns, and summary statistics.
-
-    4. Visualization Execution:
-       - Executes the generated Python code to render and return the resulting chart.
-       - Optionally returns the raw Python code for transparency or manual tweaking.
-
-    5. Computation of Metrics:
-       - Calculates metrics based on logged data
-
-    The function prints progress messages at each step and displays the generated chart.
+      1. Input Profiling – reads CSV, extracts types and summary stats,
+         and uses an LLM to generate a question and determine a visualization type.
+      2. RAG – indexes annotations and retrieves a collection from persistent storage.
+      3. Code Generation – queries the collection to fetch examples and generate code.
+      4. Visualization Execution – executes the generated code to render a chart.
+      5. Metrics Computation – updates persistent metrics including execution pass rate.
     """
     
     # Step 1: Input Profiling
@@ -54,15 +44,23 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     # Step 4: Visualization Execution
     print("=== Executing Generated Visualization Code ===")
     chart = render_visualization(generated_code, df=df)
+    
     if chart:
         print("Chart rendered successfully!")
+        success = True
     else:
         print("No chart was rendered.")
-       #Step 5: Run Metrics
-   
-    print("=== Generating Metrics ===")
-    metrics = run_metrics()
-      
+        success = False
+
+    # Step 5: Update and Report Metrics
+    print("=== Updating and Generating Metrics ===")
+    compute_execution_pass_rate(success)
+    updated_metrics = load_metrics()
+    print("Updated metrics:", updated_metrics)
+    
+    # Optionally run additional metrics calculations.
+   #  extra_metrics = run_metrics()
+   #  print("Additional metrics:", extra_metrics)
     
 if __name__ == "__main__":
     run_pipeline()
