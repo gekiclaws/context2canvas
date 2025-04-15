@@ -29,7 +29,7 @@ def run_pipeline():
     """
     
     # Step 1: Input Profiling
-    csv_filepath = "modules/data/pixar_films.csv"
+    csv_filepath = "modules/data/pokemon_df.csv"
     supported_vis_types = ["bar", "line", "scatter", "histogram"]
     question, viz_type, columns, summary_stats, df = run_input_profiler(csv_filepath, supported_vis_types)
     print("=== Input Profiling Completed ===")
