@@ -88,14 +88,13 @@ def compute_execution_pass_rate(success, filepath=METRICS_FILE):
   Returns:
     dict: The updated metrics dictionary with the new 'execution_pass_rate'.
   """
-  metrics = load_metrics(filepath)
-
   if success:
     increment_metric_by_1("num_success")
   increment_metric_by_1("num_trials")
 
-  num_success = metrics.get("num_success", 0)
-  num_trials = metrics.get("num_trials", 0)
+  metrics = load_metrics(filepath)
+  num_success = metrics.get("num_success")
+  num_trials = metrics.get("num_trials")
 
   execution_pass_rate = (num_success / num_trials) if num_trials > 0 else 0
   return set_metric("execution_pass_rate", execution_pass_rate, filepath)
