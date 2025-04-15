@@ -11,10 +11,11 @@ api_key = config['openai']['api_key']
 # Create a new OpenAI client
 client = OpenAI(api_key=api_key)
 
-def prompt_model(prompt):
+def prompt_model(prompt, temp=1.0):
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
         store=True,
+        temperature=temp,
         messages=[
             {"role": "user", 'content': prompt}
         ]

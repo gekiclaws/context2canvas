@@ -55,9 +55,5 @@ def run_pipeline():
     else:
         print("No chart was rendered.")
     
-    # Optionally, print the raw code for manual tweaking / transparency.
-    print("=== Raw Generated Code ===")
-    print(raw_code)
-    
 if __name__ == "__main__":
     run_pipeline()

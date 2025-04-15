@@ -31,6 +31,7 @@ def generate_code(viz_type, question, columns, summary_stats, collection):
         f"- Data Question: {question}\n"
         f"- Columns: {columns}\n"
         f"- Summary Statistics: {summary_stats}\n"
+        f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
         f"Model your output on the following examples:\n{examples}"
     )
     extracted_code = extract_code(response)
