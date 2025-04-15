@@ -1,1 +1,1 @@
-# context2canvas
+IMPORTANT: Unzip the annotations.json ZIP file and have the annotations.json file in your data folder before using the app.
