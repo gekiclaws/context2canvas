@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import logging
 script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
 
 from modules.llm.openai_client import prompt_model
@@ -60,7 +61,9 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     question = prompt_model(
         f"Only consider the graph types mentioned here: {supported_classes}. Create a single, interesting data question based on {columns} and {summary_stats}. Do not return anything besides the data question. Your answer should be a simple sentence. Format your response like {question_examples}", 2.0
     )
-    
+    logging.basicConfig(filename='module_results.log', level=logging.INFO)
+    logging.info(f"Result: {question}")
+
     # Determine the best visualization type given the question and dataset metadata
     viz_type = prompt_model(
         f"What is the best visualization class we should use to characterize this problem, "

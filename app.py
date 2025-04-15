@@ -2,6 +2,7 @@ from modules.input_profiler import main as run_input_profiler
 from modules.rag import index_data, get_or_create_collection
 from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
+from evaluation.eval_input_profiler import main as run_metrics
 
 def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     """
@@ -24,6 +25,9 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     4. Visualization Execution:
        - Executes the generated Python code to render and return the resulting chart.
        - Optionally returns the raw Python code for transparency or manual tweaking.
+
+    5. Computation of Metrics:
+       - Calculates metrics based on logged data
 
     The function prints progress messages at each step and displays the generated chart.
     """
@@ -53,6 +57,11 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
         print("Chart rendered successfully!")
     else:
         print("No chart was rendered.")
+       #Step 5: Run Metrics
+   
+    print("=== Generating Metrics ===")
+    metrics = run_metrics()
+      
     
 if __name__ == "__main__":
     run_pipeline()
