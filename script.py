@@ -3,7 +3,7 @@ from modules.rag import index_data, get_or_create_collection
 from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
 
-def run_pipeline():
+def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     """
     Executes the full data-to-visualization pipeline:
 
@@ -29,9 +29,8 @@ def run_pipeline():
     """
     
     # Step 1: Input Profiling
-    csv_filepath = "modules/data/pokemon_df.csv"
     supported_vis_types = ["bar", "line", "scatter", "histogram"]
-    question, viz_type, columns, summary_stats, df = run_input_profiler(csv_filepath, supported_vis_types)
+    question, viz_type, columns, summary_stats, df = run_input_profiler(dataset_path, supported_vis_types)
     print("=== Input Profiling Completed ===")
     print("Data Question:", question)
     print("Visualization Type:", viz_type)
