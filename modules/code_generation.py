@@ -28,6 +28,7 @@ def generate_code(viz_type, question, columns, summary_stats, collection, df, ex
         f"- Columns: {columns}\n"
         f"- Summary Statistics: {summary_stats}\n"
         f"- Dataframe: {df}\n"
+        f"Ensure your dataframe variable is labelled `df`.\n"
         f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
         f"Model your output on the following examples:\n{examples}"
     )
