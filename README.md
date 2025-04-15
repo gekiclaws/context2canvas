@@ -5,4 +5,4 @@ IMPORTANT (setup):
 4. Switch client in config.ini to `gpt-4o` for better results.
 
 To run the app:
-1. `cd` into the root directory of the repo, then run the script with `python3 script.py`
+1. `cd` into the root directory of the repo, then run the script with `python3 app.py`
