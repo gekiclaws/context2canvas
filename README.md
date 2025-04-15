@@ -1,1 +1,7 @@
-IMPORTANT: Unzip the annotations.json ZIP file and have the annotations.json file in your data folder before using the app.
+IMPORTANT (setup):
+1. In `modules/data`, unzip the `annotations.json.zip` file
+2. Ensure the unzipped `annotations.json` file is in the `modules/data` folder
+3. In the root directory, make a copy of `config.ini.sample` called `config.ini`, and put in your OpenAI API key
+
+To run the app:
+1. `cd` into the root directory of the repo, then run the script with `python3 script.py`
