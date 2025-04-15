@@ -70,10 +70,10 @@ def get_or_create_collection(annotations, collection_name="c2c", max_documents=1
     )
 
     # Check if the collection already exists.
-    collection = client.get_collection(name=collection_name)
-
-    # If collection doesn't exist, create and index the new collection.
-    if collection is None:
+    try:
+        collection = client.get_collection(name=collection_name)
+        print(f"Collection '{collection_name}' found.")
+    except chromadb.errors.InvalidCollectionException:
         print(f"Collection '{collection_name}' not found. Creating a new collection.")
         collection = client.create_collection(name=collection_name)
         selected_docs = annotations[:max_documents]
@@ -82,8 +82,6 @@ def get_or_create_collection(annotations, collection_name="c2c", max_documents=1
             ids=[str(i) for i in range(len(selected_docs))]
         )
         print("New collection created and persisted.")
-    else:
-        print(f"Collection '{collection_name}' found.")
 
     return collection
 
