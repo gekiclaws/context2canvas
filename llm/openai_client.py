@@ -1,5 +1,13 @@
+import configparser
 from openai import OpenAI
-client = OpenAI()
+
+# Read API key from config file
+config = configparser.ConfigParser()
+config.read('../config.ini')
+api_key = config['openai']['api_key']
+
+# Create a new OpenAI client
+client = OpenAI(api_key=api_key)
 
 def prompt_model(prompt):
     completion = client.chat.completions.create(
