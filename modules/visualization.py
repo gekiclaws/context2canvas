@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-def render_visualization(generated_code, return_raw=False):
+def render_visualization(generated_code, return_raw=False, df=None):
     """
     Executes the validated Python code for visualization, renders the resulting chart,
     and optionally returns the raw Python code.
@@ -21,7 +21,7 @@ def render_visualization(generated_code, return_raw=False):
             tuple: (chart, generated_code) where chart is as above.
     """
     # Create an isolated global namespace for exec
-    global_namespace = {}
+    global_namespace = {'df': df}
 
     # Execute the generated code safely (beware of executing untrusted code)
     try:

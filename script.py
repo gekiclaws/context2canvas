@@ -49,7 +49,7 @@ def run_pipeline():
     # Step 4: Visualization Execution
     print("=== Executing Generated Visualization Code ===")
     # Change return_raw to True if you want to see the raw Python code as well.
-    chart, raw_code = render_visualization(generated_code, return_raw=True)
+    chart, raw_code = render_visualization(generated_code, return_raw=True, df=df)
     if chart:
         print("Chart rendered successfully!")
     else:
