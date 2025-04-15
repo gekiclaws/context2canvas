@@ -8,7 +8,7 @@ from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
 
 # Import the generic metrics functions
-from evaluation.metrics import load_metrics, compute_execution_pass_rate, compute_question_diversity_score
+from evaluation.metrics import get_metric, compute_execution_pass_rate, compute_question_diversity_score
 
 def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     """
@@ -55,8 +55,9 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     print("=== Updating and Generating Metrics ===")
     compute_execution_pass_rate(success)
     compute_question_diversity_score()
-    updated_metrics = load_metrics()
-    print("Updated metrics:", updated_metrics)
+    print("Trials:", round(get_metric("num_trials"), 4))
+    print("Execution pass rate:", round(get_metric("execution_pass_rate"), 4))
+    print("Question diversity score:", round(get_metric("question_diversity_score"), 4))
     
 if __name__ == "__main__":
     run_pipeline()
