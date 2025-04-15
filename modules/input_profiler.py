@@ -64,7 +64,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
         f"What is the best visualization class we should use to characterize this problem, "
         f"given {question}, {columns}, and {summary_stats}? "
         f"Do not return anything besides the visualization type. "
-        f"Only return a type listed in {supported_classes}"
+        f"Only return a type listed in {supported_classes}", 2.0
     )
     
     return question, viz_type, columns, summary_stats, df
