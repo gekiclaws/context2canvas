@@ -1,12 +1,11 @@
 import re
 
 from modules.llm.openai_client import prompt_model
-from modules.rag import query_data, get_or_create_collection, index_data
+from modules.rag import index_data, get_or_create_collection, query_data
 
-def generate_code(viz_type, question, columns, summary_stats, collection, df):
+def generate_code(viz_type, question, columns, summary_stats, collection, df, examples):
     """
-    Generate Python code for a visualization based on provided profiling parameters and examples 
-    retrieved from a ChromaDB collection.
+    Generate Python code for a visualization based on provided profiling parameters.
 
     The function first queries the collection for examples related to the data question and 
     then uses an LLM to generate Python code for building a visualization.
@@ -21,8 +20,6 @@ def generate_code(viz_type, question, columns, summary_stats, collection, df):
     Returns:
         str: Generated Python code for creating the desired visualization.
     """
-    # Retrieve examples from the collection based on the question
-    examples = query_data(question, collection)
     # Generate Python code using the prompt_model (LLM)
     response = prompt_model(
         f"Generate python code for this visualization, given the following parameters:\n"
@@ -49,8 +46,7 @@ def extract_code(output):
     if match:
         return match.group(1).strip()
     else:
-        print("⚠️ No valid code block found in output.")
-        return None
+        raise Exception("No valid code block found in output.")
 
 def remove_sample_data_section(code):
     # Remove dictionary-based sample data block
@@ -64,7 +60,6 @@ def remove_sample_data_section(code):
     return code
 
 if __name__ == "__main__":
-    # Example usage:
     # In a complete application these values would come from the input_profiler module.
     viz_type = "bar"
     question = "What is the distribution of film ratings?"
@@ -74,8 +69,9 @@ if __name__ == "__main__":
     # Build the collection using the RAG module
     annotations, _ = index_data()
     collection = get_or_create_collection(annotations)
+    examples = query_data(question, collection)
     
     df = None
-    generated_code = generate_code(viz_type, question, columns, summary_stats, collection, df)
+    generated_code = generate_code(viz_type, question, columns, summary_stats, collection, df, examples)
     print("Generated Code:")
     print(generated_code)

@@ -1,5 +1,5 @@
 from modules.input_profiler import main as run_input_profiler
-from modules.rag import index_data, get_or_create_collection
+from modules.rag import index_data, get_or_create_collection, query_data
 from modules.code_generation import generate_code as run_code_generator
 from modules.visualization import render_visualization
 from evaluation.eval_input_profiler import main as run_metrics
@@ -43,9 +43,11 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
     annotations, _ = index_data()
     collection = get_or_create_collection(annotations)
     print("=== RAG Module: Data Indexed or Loaded from Cache ===")
+    examples = query_data(question, collection)
+    print("Examples Retrieved:", examples)
     
     # Step 3: Code Generation
-    generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection, df)
+    generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection, df, examples)
     print("=== Generated Code ===")
     print(generated_code)
     
