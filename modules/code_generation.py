@@ -4,7 +4,7 @@ import bootstrap
 from modules.llm.openai_client import prompt_model
 from modules.rag import query_data, get_or_create_collection, index_data
 
-def generate_code(viz_type, question, columns, summary_stats, collection):
+def generate_code(viz_type, question, columns, summary_stats, collection, df):
     """
     Generate Python code for a visualization based on provided profiling parameters and examples 
     retrieved from a ChromaDB collection.
@@ -31,11 +31,13 @@ def generate_code(viz_type, question, columns, summary_stats, collection):
         f"- Data Question: {question}\n"
         f"- Columns: {columns}\n"
         f"- Summary Statistics: {summary_stats}\n"
+        f"- Dataframe: {df}\n"
         f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
         f"Model your output on the following examples:\n{examples}"
     )
     extracted_code = extract_code(response)
-    return extracted_code
+    cleaned_code = remove_sample_data_section(extracted_code)
+    return cleaned_code
 
 def extract_code(output):
     """
@@ -51,6 +53,14 @@ def extract_code(output):
         print("⚠️ No valid code block found in output.")
         return None
 
+def remove_sample_data_section(code):
+    # Regex pattern to match from the "data =" line up to and including "df = pd.DataFrame(data)"
+    pattern = r"data\s*=\s*\{.*?df\s*=\s*pd\.DataFrame\(data\)\s*"
+    # Replace the matched block with an empty string (or your custom code)
+    cleaned_code = re.sub(pattern, "", code, flags=re.DOTALL)
+    return cleaned_code
+
+
 if __name__ == "__main__":
     # Example usage:
     # In a complete application these values would come from the input_profiler module.
@@ -63,6 +73,7 @@ if __name__ == "__main__":
     annotations, _ = index_data()
     collection = get_or_create_collection(annotations)
     
-    generated_code = generate_code(viz_type, question, columns, summary_stats, collection)
+    df = None
+    generated_code = generate_code(viz_type, question, columns, summary_stats, collection, df)
     print("Generated Code:")
     print(generated_code)

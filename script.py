@@ -31,7 +31,7 @@ def run_pipeline():
     # Step 1: Input Profiling
     csv_filepath = "modules/data/pixar_films.csv"
     supported_vis_types = ["bar", "line", "scatter", "histogram"]
-    question, viz_type, columns, summary_stats = run_input_profiler(csv_filepath, supported_vis_types)
+    question, viz_type, columns, summary_stats, df = run_input_profiler(csv_filepath, supported_vis_types)
     print("=== Input Profiling Completed ===")
     print("Data Question:", question)
     print("Visualization Type:", viz_type)
@@ -42,7 +42,7 @@ def run_pipeline():
     print("=== RAG Module: Data Indexed or Loaded from Cache ===")
     
     # Step 3: Code Generation
-    generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection)
+    generated_code = run_code_generator(viz_type, question, columns, summary_stats, collection, df)
     print("=== Generated Code ===")
     print(generated_code)
     

@@ -67,7 +67,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
         f"Only return a type listed in {supported_classes}"
     )
     
-    return question, viz_type, columns, summary_stats
+    return question, viz_type, columns, summary_stats, df
 
 if __name__ == "__main__":
     data_path = os.path.join(script_dir, "data/pixar_films.csv")
