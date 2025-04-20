@@ -71,8 +71,16 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
         q_message = f"The user provided this additional context, which should override anything else: {context}." + q_message
 
     question = prompt_model(q_message, 2.0)
-    logging.basicConfig(filename='evaluation/question_results.log', level=logging.INFO)
-    logging.info(f"Result: {question}")
+    logger = logging.getLogger("question_evaluator")
+    logger.setLevel(logging.INFO)
+
+    if not logger.hasHandlers():
+        file_handler = logging.FileHandler('evaluation/question_results.log')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    
+    logger.info(f"Result: {question}")
 
     # Determine the best visualization type given the question and dataset metadata
     viz_type = prompt_model(
