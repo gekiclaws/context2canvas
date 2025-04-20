@@ -1,11 +1,12 @@
 import pandas as pd
 import os
 import logging
+import tiktoken
 script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
 
 from modules.llm.openai_client import prompt_model
 
-def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"], context = ""):
+def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"], context = "", metrics_on=False):
     """
     Process an input CSV file to extract column information, generate summary statistics,
     and then use an LLM to create a data question and suggest a visualization type.
@@ -62,9 +63,10 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     Only consider the graph types mentioned here: {supported_classes}.
     Create a single, interesting data question based on {columns} and {summary_stats}.
     Do not return anything besides the data question.
-    Your answer should be a simple sentence. Format your response like {question_examples}
+    Your answer should be a simple sentence of 15 words or less.
+    Format your response like {question_examples}.
     """
-    
+
     if context != "":
         q_message = f"The user provided this additional context, which should override anything else: {context}." + q_message
 
@@ -80,6 +82,16 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
         f"Only return a type listed in {supported_classes}", 2.0
     )
     
+    #computes token consumption if metrics are on:
+    if metrics_on:
+        encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+
+        question_input_tokens = encoding.encode(q_message)
+        question_output_tokens = encoding.encode(question)
+        total_tokens = len(question_input_tokens) + len(question_output_tokens)
+
+        print(f"Token Consumption So Far: {total_tokens}")
+
     return question, viz_type, columns, summary_stats, df
 
 if __name__ == "__main__":

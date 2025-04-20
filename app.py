@@ -10,56 +10,65 @@ from modules.visualization import render_visualization
 # Import the generic metrics functions
 from evaluation.metrics import get_metric, compute_execution_pass_rate, compute_question_diversity_score, compute_retrieval_alignment_score
 
-# Prepare parser for user input / context reception
-parser = argparse.ArgumentParser()
-parser.add_argument("--context", help="Additional information from the user to direct the model's output",
-                    type=str)
-args = parser.parse_args()
-if args.context:
-    context = args.context
-else:
-    context = ""
-
 def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
-    """
-    Executes the full data-to-visualization pipeline:
-      1. Input Profiling – reads CSV, extracts types and summary stats,
-         and uses an LLM to generate a question and determine a visualization type.
-      2. RAG – indexes annotations and retrieves a collection from persistent storage.
-      3. Code Generation – queries the collection to fetch examples and generate code.
-      4. Visualization Execution – executes the generated code to render a chart.
-      5. Metrics Computation – updates persistent metrics including execution pass rate.
-    """
-    
-    # Step 1: Input Profiling
-    supported_vis_types = ["bar", "line", "scatter", "histogram"]
-    question, viz_type, columns, summary_stats, df = run_input_profiler(dataset_path, supported_vis_types, context)
-    print("=== Input Profiling Completed ===")
-    print("Data Question:", question)
-    print("Visualization Type:", viz_type)
-    
-    # Step 2: RAG – Load or Create Persistent Collection
-    annotations, _ = index_data()
-    collection = get_or_create_collection(annotations)
-    print("=== RAG Module: Data Indexed or Loaded from Cache ===")
-    examples = query_data(question, collection)
-    print("Examples Retrieved:", examples)
-    
-    # Step 3: Code Generation
-    generated_code = run_code_generator(viz_type, question, columns, summary_stats, df, examples)
-    print("=== Generated Code ===")
-    print(generated_code)
-    
-    # Step 4: Visualization Execution
-    print("=== Executing Generated Visualization Code ===")
-    chart = render_visualization(generated_code, df=df)
-    
-    if chart:
-        print("Chart rendered successfully!")
-        success = True
-    else:
-        print("No chart was rendered.")
-        success = False
+   """
+   Executes the full data-to-visualization pipeline:
+   1. Input Profiling – reads CSV, extracts types and summary stats,
+   and uses an LLM to generate a question and determine a visualization type.
+   2. RAG – indexes annotations and retrieves a collection from persistent storage.
+   3. Code Generation – queries the collection to fetch examples and generate code.
+   4. Visualization Execution – executes the generated code to render a chart.
+   5. Metrics Computation – updates persistent metrics including execution pass rate.
+   """
+
+   # Step 0: Prepare parser for user input
+   parser = argparse.ArgumentParser()
+   parser.add_argument("--context",
+                  help="Additional information from the user to direct the model's output",
+                  type=str)
+   parser.add_argument("-m",
+                  "--metrics",
+                  action="store_true",
+                  help="Show performance metrics")
+   args = parser.parse_args()
+
+   # maps arguments to their input values
+   if args.context:
+      context = args.context
+   else:
+      context = ""
+
+   metrics_on = args.metrics
+
+   # Step 1: Input Profiling
+   supported_vis_types = ["bar", "line", "scatter", "histogram"]
+   question, viz_type, columns, summary_stats, df = run_input_profiler(dataset_path, supported_vis_types, context, metrics_on)
+   print("=== Input Profiling Completed ===")
+   print("Data Question:", question)
+   print("Visualization Type:", viz_type)
+
+   # Step 2: RAG – Load or Create Persistent Collection
+   annotations, _ = index_data()
+   collection = get_or_create_collection(annotations)
+   print("=== RAG Module: Data Indexed or Loaded from Cache ===")
+   examples = query_data(question, collection)
+   print("Examples Retrieved:", examples)
+
+   # Step 3: Code Generation
+   generated_code = run_code_generator(viz_type, question, columns, summary_stats, df, examples)
+   print("=== Generated Code ===")
+   print(generated_code)
+
+   # Step 4: Visualization Execution
+   print("=== Executing Generated Visualization Code ===")
+   chart = render_visualization(generated_code, df=df)
+
+   if chart:
+      print("Chart rendered successfully!")
+      success = True
+   else:
+      print("No chart was rendered.")
+      success = False
 
    # Step 5: Update and Report Metrics
    print("=== Updating and Generating Metrics ===")
