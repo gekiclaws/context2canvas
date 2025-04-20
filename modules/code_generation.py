@@ -1,4 +1,4 @@
-import re
+import re, ast
 
 from modules.llm.openai_client import prompt_model
 from modules.rag import index_data, get_or_create_collection, query_data
@@ -31,33 +31,42 @@ def generate_code(viz_type, question, columns, summary_stats, df, examples):
         f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
         f"Model your output on the following examples:\n{examples}"
     )
-    extracted_code = extract_code(response)
-    cleaned_code = remove_sample_data_section(extracted_code)
+    extracted_code = extract_code_from_response(response)
+    cleaned_code = clean_code(extracted_code)
     return cleaned_code
 
-def extract_code(output):
+def extract_code_from_response(response):
     """
     Extracts Python code from a markdown-style code block in the given output string.
     Handles cases where the code is wrapped in ```python ... ``` or just ``` ... ```.
     Returns the extracted code as a string, or None if no code block is found.
     """
     # Try to match ```python ... ```
-    match = re.search(r"```(?:python)?\n(.*?)```", output, re.DOTALL)
+    match = re.search(r"```(?:python)?\n(.*?)```", response, re.DOTALL)
     if match:
         return match.group(1).strip()
     else:
         raise Exception("LLM failed to generate code for visualization.")
 
-def remove_sample_data_section(code):
-    # Remove dictionary-based sample data block
-    pattern_dict_block = r"data\s*=\s*\{.*?df\s*=\s*pd\.DataFrame\(data\)\s*"
-    code = re.sub(pattern_dict_block, "", code, flags=re.DOTALL)
+def clean_code(source: str) -> str:
+    # 1) Remove the comment block (and everything until the next blank line)
+    source = re.sub(
+        r"(?ms)^#\s*Create the DataFrame.*?(\n\s*\n)", 
+        "\n", 
+        source
+    )
 
-    # Remove any line that assigns to df (covers all df = ... cases)
-    pattern_df_assignment = r"^.*\bdf\s*=\s*.*$"
-    code = re.sub(pattern_df_assignment, "", code, flags=re.MULTILINE)
-
-    return code
+    # 2) Now strip any df assignments via AST
+    tree = ast.parse(source)
+    filtered = [
+        node for node in tree.body
+        if not (
+            isinstance(node, ast.Assign)
+            and any(isinstance(t, ast.Name) and t.id=="df"
+                    for t in node.targets)
+        )
+    ]
+    return ast.unparse(ast.Module(filtered, type_ignores=[]))
 
 if __name__ == "__main__":
     # In a complete application these values would come from the input_profiler module.
@@ -72,6 +81,6 @@ if __name__ == "__main__":
     examples = query_data(question, collection)
     
     df = None
-    generated_code = generate_code(viz_type, question, columns, summary_stats, collection, df, examples)
+    generated_code = generate_code(viz_type, question, columns, summary_stats, df, examples)
     print("Generated Code:")
     print(generated_code)
