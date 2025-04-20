@@ -5,7 +5,7 @@ script_dir = os.path.dirname(__file__)  # directory of input_profiler.py
 
 from modules.llm.openai_client import prompt_model
 
-def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"]):
+def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-graph", "horizontal-bar-graph", "pie-chart"], context = ""):
     """
     Process an input CSV file to extract column information, generate summary statistics,
     and then use an LLM to create a data question and suggest a visualization type.
@@ -58,9 +58,17 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     ]
     
     # Create an interesting data question based on the dataset characteristics
-    question = prompt_model(
-        f"Only consider the graph types mentioned here: {supported_classes}. Create a single, interesting data question based on {columns} and {summary_stats}. Do not return anything besides the data question. Your answer should be a simple sentence. Format your response like {question_examples}", 2.0
-    )
+    q_message = f"""
+    Only consider the graph types mentioned here: {supported_classes}.
+    Create a single, interesting data question based on {columns} and {summary_stats}.
+    Do not return anything besides the data question.
+    Your answer should be a simple sentence. Format your response like {question_examples}
+    """
+    
+    if context != "":
+        q_message = f"The user provided this additional context, which should override anything else: {context}." + q_message
+
+    question = prompt_model(q_message, 2.0)
     logging.basicConfig(filename='evaluation/question_results.log', level=logging.INFO)
     logging.info(f"Result: {question}")
 
