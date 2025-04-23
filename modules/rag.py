@@ -24,7 +24,9 @@ def index_data(json_filepath=default_filepath):
     with open(json_filepath, 'r') as f:
         data = json.load(f)
 
+    
     # Instantiate a text splitter if needed for further splitting (currently not applied)
+    """
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=2500,
@@ -32,6 +34,7 @@ def index_data(json_filepath=default_filepath):
         length_function=len,
         is_separator_regex=False,
     )
+    """
 
     annotations = []
     types = []
@@ -70,6 +73,7 @@ def get_or_create_collection(annotations, collection_name="c2c", max_documents=1
     )
 
     # Check if the collection already exists.
+    ## client.delete_collection(name=collection_name) ### delete vector DB for testing purposes
     try:
         collection = client.get_collection(name=collection_name)
         print(f"Collection '{collection_name}' found.")
@@ -77,10 +81,11 @@ def get_or_create_collection(annotations, collection_name="c2c", max_documents=1
         print(f"Collection '{collection_name}' not found. Creating a new collection.")
         collection = client.create_collection(name=collection_name)
         selected_docs = annotations[:max_documents]
-        collection.add(
-            documents=selected_docs,
-            ids=[str(i) for i in range(len(selected_docs))]
-        )
+        for ii in range(len(selected_docs)):
+            collection.add(
+                documents=selected_docs[ii],
+                ids=str(ii)
+            )
         print("New collection created and persisted.")
 
     return collection

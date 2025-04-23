@@ -23,7 +23,8 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
 
    # Step 0: Prepare parser for user input
    parser = argparse.ArgumentParser()
-   parser.add_argument("--context",
+   parser.add_argument("-c",
+                       "--context",
                   help="Additional information from the user to direct the model's output",
                   type=str)
    parser.add_argument("-m",
@@ -41,6 +42,7 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
    metrics_on = args.metrics
 
    # Step 1: Input Profiling
+   print("=== Generating Input Profile ===")
    supported_vis_types = ["bar", "line", "scatter", "histogram"]
    question, viz_type, columns, summary_stats, df = run_input_profiler(dataset_path, supported_vis_types, context, metrics_on)
    print("=== Input Profiling Completed ===")
@@ -48,6 +50,7 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
    print("Visualization Type:", viz_type)
 
    # Step 2: RAG – Load or Create Persistent Collection
+   print("=== Indexing Vector Database ===")
    annotations, _ = index_data()
    collection = get_or_create_collection(annotations)
    print("=== RAG Module: Data Indexed or Loaded from Cache ===")
