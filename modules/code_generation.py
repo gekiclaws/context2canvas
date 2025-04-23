@@ -1,9 +1,10 @@
 import re, ast
+import tiktoken
 
 from modules.llm.openai_client import prompt_model
 from modules.rag import index_data, get_or_create_collection, query_data
 
-def generate_code(viz_type, question, columns, summary_stats, df, examples):
+def generate_code(viz_type, question, columns, summary_stats, df, examples, metrics_on):
     """
     Generate Python code for a visualization based on provided profiling parameters.
 
@@ -26,20 +27,34 @@ def generate_code(viz_type, question, columns, summary_stats, df, examples):
     file.close()
 
     # Generate Python code using the prompt_model (LLM)
-    response = prompt_model(
-        f"Generate python code for this visualization, given the following parameters:\n"
-        f"- Visualization Type: {viz_type}\n"
-        f"- Data Question: {question}\n"
-        f"- Columns: {columns}\n"
-        f"- Summary Statistics: {summary_stats}\n"
-        f"- Dataframe: {df}\n"
-        f"Ensure your dataframe variable is labelled `df`.\n"
-        f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
-        f"Model your output on the following examples:\n{examples}"
-        f"Make sure to follor these design rules as well: {design_rules}"
-    )
+
+    response_prompt = f"""
+        Generate python code for this visualization, given the following parameters:\n
+        - Visualization Type: {viz_type}\n
+        - Data Question: {question}\n
+        - Columns: {columns}\n
+        - Summary Statistics: {summary_stats}\n
+        - Dataframe: {df}\n
+        Ensure your dataframe variable is labelled `df`.\n
+        Ensure your code is wrapped in a ```python ... ``` code block.\n
+        Model your output on the following examples:\n{examples}
+        Make sure to follor these design rules as well: {design_rules}
+    """
+    response = prompt_model(response_prompt)
     extracted_code = extract_code_from_response(response)
     cleaned_code = clean_code(extracted_code)
+
+    if metrics_on:
+        encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+
+        response_input_tokens = encoding.encode(response_prompt)
+        response_output_tokens = encoding.encode(response)
+        total_input_tokens = len(response_input_tokens)
+        total_output_tokens = len(response_output_tokens)
+
+        print(f"Input Token Consumption: {total_input_tokens}")
+        print(f"Output Token Consumption: {total_output_tokens}")
+
     return cleaned_code
 
 def extract_code_from_response(response):

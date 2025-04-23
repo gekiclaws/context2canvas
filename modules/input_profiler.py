@@ -96,9 +96,11 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
 
         question_input_tokens = encoding.encode(q_message)
         question_output_tokens = encoding.encode(question)
-        total_tokens = len(question_input_tokens) + len(question_output_tokens)
+        total_input_tokens = len(question_input_tokens)
+        total_output_tokens = len(question_output_tokens)
 
-        print(f"Token Consumption So Far: {total_tokens}")
+        print(f"Input token Consumption So Far: {total_input_tokens}")
+        print(f"Input token Consumption So Far: {total_output_tokens}")
 
     return question, viz_type, columns, summary_stats, df
 

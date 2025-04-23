@@ -62,7 +62,7 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
    print("Examples Retrieved:", examples)
 
    # Step 3: Code Generation
-   generated_code = run_code_generator(viz_type, question, columns, summary_stats, df, examples)
+   generated_code = run_code_generator(viz_type, question, columns, summary_stats, df, examples, metrics_on)
    print("=== Generated Code ===")
    print(generated_code)
 
@@ -78,7 +78,7 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
       success = False
 
    # Step 5: Update and Report Metrics
-   print("=== Updating Records ===")
+   print("Updating Records...")
    compute_metrics(success)
    if metrics_on:
       print("=== Generating Metrics ===")

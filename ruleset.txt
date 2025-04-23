@@ -5,6 +5,7 @@
 - Make sure, if a bar graph has tick markers, each tick marker is clearly centered between the bounds of the corresponding bar
 - Make sure value labels clearly correspond to each bar
 - Only add gradients for continuous variables or ordinal data
+- Make sure the legend does not obscure any of the bars
 
 # Scatterplots
 - Use as few categories as possible. If you a large number of categories, try to group them up via clear, common themes
