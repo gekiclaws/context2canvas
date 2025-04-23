@@ -3,6 +3,10 @@
 - When using a high number of bars (i.e > 8), never use multiple colors to represent each bar, unless you're using shades of the same color to represent a gradient
 - Make sure tick labels never overlap
 - Make sure, if a bar graph has tick markers, each tick marker is clearly centered between the bounds of the corresponding bar
+- Make sure value labels clearly correspond to each bar
+- Only add gradients for continuous variables or ordinal data
 
 # Scatterplots
 - Use as few categories as possible. If you a large number of categories, try to group them up via clear, common themes
+- Make sure the alpha value of each data is not exactly one. In other words, make sure each dot is not completely opaque
+- Do not use gradients for discrete categories. Make sure that the differences between each category is easily noticeable

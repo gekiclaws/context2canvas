@@ -57,7 +57,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
         "What are the trends in programming language popularity by year?",
         "Which product category has the most sales?"
     ]
-    
+
     # Create an interesting data question based on the dataset characteristics
     q_message = f"""
     Only consider the graph types mentioned here: {supported_classes}.
@@ -70,7 +70,7 @@ def main(filepath, supported_classes=["line-plot", "dot-plot", "vertical-bar-gra
     if context != "":
         q_message = f"The user provided this additional context, which should override anything else: {context}." + q_message
 
-    question = prompt_model(q_message, 2.0)
+    question = prompt_model(q_message, 2.0, max_tok = 40)
     logger = logging.getLogger("question_evaluator")
     logger.setLevel(logging.INFO)
 

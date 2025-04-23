@@ -31,6 +31,10 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
                   "--metrics",
                   action="store_true",
                   help="Show performance metrics")
+   parser.add_argument("-sr",
+                  "--skip rag",
+                  action="store_true",
+                  help="Show performance metrics")
    args = parser.parse_args()
 
    # maps arguments to their input values

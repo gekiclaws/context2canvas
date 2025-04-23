@@ -12,11 +12,12 @@ model = config['openai']['model']
 # Create a new OpenAI client
 client = OpenAI(api_key=api_key)
 
-def prompt_model(prompt, temp=1.0):
+def prompt_model(prompt, temp=1.0, max_tok = 2000):
     completion = client.chat.completions.create(
         model=model,
         store=True,
         temperature=temp,
+        max_tokens=max_tok,
         messages=[
             {"role": "user", 'content': prompt}
         ]
