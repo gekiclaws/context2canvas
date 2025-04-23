@@ -1,0 +1,8 @@
+# Bar Charts
+- Bar charts should **never** have more than 15 bars -- except for ordinal data (i.e. tracking data daily across a year)
+- When using a high number of bars (i.e > 8), never use multiple colors to represent each bar, unless you're using shades of the same color to represent a gradient
+- Make sure tick labels never overlap
+- Make sure, if a bar graph has tick markers, each tick marker is clearly centered between the bounds of the corresponding bar
+
+# Scatterplots
+- Use as few categories as possible. If you a large number of categories, try to group them up via clear, common themes

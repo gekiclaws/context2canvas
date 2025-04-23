@@ -19,6 +19,12 @@ def generate_code(viz_type, question, columns, summary_stats, df, examples):
     Returns:
         str: Generated Python code for creating the desired visualization.
     """
+
+    # import heuristic ruleset for designing graphs
+    file = open('ruleset.txt', 'r')
+    design_rules = file.read()
+    file.close()
+
     # Generate Python code using the prompt_model (LLM)
     response = prompt_model(
         f"Generate python code for this visualization, given the following parameters:\n"
@@ -30,6 +36,7 @@ def generate_code(viz_type, question, columns, summary_stats, df, examples):
         f"Ensure your dataframe variable is labelled `df`.\n"
         f"Ensure your code is wrapped in a ```python ... ``` code block.\n"
         f"Model your output on the following examples:\n{examples}"
+        f"Make sure to follor these design rules as well: {design_rules}"
     )
     extracted_code = extract_code_from_response(response)
     cleaned_code = clean_code(extracted_code)

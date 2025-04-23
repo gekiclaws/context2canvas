@@ -90,7 +90,7 @@ def get_or_create_collection(annotations, collection_name="c2c", max_documents=1
 
     return collection
 
-def query_data(question, collection, n_results=3):
+def query_data(question, collection, n_results=2):
     """
     Query the provided ChromaDB collection using a text question.
 
