@@ -21,7 +21,7 @@ def run_pipeline(dataset_path="pokemon_df.csv"):
    5. Metrics Computation – updates persistent metrics including execution pass rate.
    """
 
-   dataset_path = "modules/data/"+dataset_path
+   dataset_path = "data/"+dataset_path
 
    # Step 0: Prepare parser for user input
    parser = argparse.ArgumentParser()
@@ -95,4 +95,4 @@ def compute_metrics(code_executed):
    compute_execution_pass_rate(code_executed)
     
 if __name__ == "__main__":
-   run_pipeline()
+   run_pipeline("data.csv")

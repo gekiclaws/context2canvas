@@ -1,7 +1,10 @@
-*/*/annotations.json
 config.ini
-*.pyc
-*/*/chroma_storage
 .DS_Store
+*.pyc
+
 */*.log
 */*.json
+
+data/annotations.json
+data/chroma_storage
+data/*.csv
