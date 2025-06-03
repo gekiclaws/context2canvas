@@ -10,7 +10,7 @@ from modules.visualization import render_visualization
 # Import the generic metrics functions
 from evaluation.metrics import get_metric, compute_execution_pass_rate, compute_question_diversity_score, compute_retrieval_alignment_score
 
-def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
+def run_pipeline(dataset_path="pokemon_df.csv"):
    """
    Executes the full data-to-visualization pipeline:
    1. Input Profiling – reads CSV, extracts types and summary stats,
@@ -20,6 +20,8 @@ def run_pipeline(dataset_path="modules/data/pokemon_df.csv"):
    4. Visualization Execution – executes the generated code to render a chart.
    5. Metrics Computation – updates persistent metrics including execution pass rate.
    """
+
+   dataset_path = "modules/data/"+dataset_path
 
    # Step 0: Prepare parser for user input
    parser = argparse.ArgumentParser()

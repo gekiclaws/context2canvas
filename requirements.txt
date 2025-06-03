@@ -7,3 +7,7 @@ sentence-transformers
 openai
 flask
 python-dotenv
+tiktoken
+langchain_text_splitters
+chromadb
+bert_score
